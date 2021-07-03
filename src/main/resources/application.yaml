@@ -1,0 +1,5 @@
+spring:
+  cloud:
+    gcp:
+      project-id: epx-exam-service
+      
