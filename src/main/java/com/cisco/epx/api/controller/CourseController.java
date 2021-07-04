@@ -1,139 +1,125 @@
 package com.cisco.epx.api.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cisco.epx.api.dto.LikeCourseDto;
 import com.cisco.epx.api.model.Course;
+import com.cisco.epx.api.model.User;
 import com.cisco.epx.api.repository.CourseRepository;
+import com.cisco.epx.api.repository.UserRepository;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 
 @RestController
 @RequestMapping("/course")
 public class CourseController {
-      
 
-    @Autowired
-    private CourseRepository courseRepository;
+	@Autowired
+	private CourseRepository courseRepository;
 
-    @GetMapping
-    public ResponseEntity<Object> getAllCourses() {    	
-        return new ResponseEntity<>(courseRepository.findAll(), HttpStatus.OK);
-    }
+	@Autowired
+	private UserRepository userRepository;
 
-    @PostMapping
-    public ResponseEntity<Object> addCourse(@RequestBody Course course){
-    	courseRepository.save(course);
+	@GetMapping
+	public ResponseEntity<Object> getAllCourses() {
+		return new ResponseEntity<>(courseRepository.findAll(), HttpStatus.OK);
+	}
 
-        return new ResponseEntity<>(course, HttpStatus.OK);
-    }
+	@PostMapping
+	public ResponseEntity<Object> addCourse(@RequestBody Course course) {
+		courseRepository.save(course);
 
-    @PutMapping
-    public ResponseEntity<Object> updateCourse(@RequestBody Course course){
-    	Course response = courseRepository.save(course);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+		return new ResponseEntity<>(course, HttpStatus.OK);
+	}
 
-//    @DeleteMapping("/{tripId}")
-//    public ResponseEntity<Object> deleteTrip(@PathVariable("tripId") String id) throws ExecutionException, InterruptedException {
-//        DocumentSnapshot documentSnapshot = dbFirestore.collection(COURSE_COLLECTION_NAME).document(id).get().get();
-//
-//        if (!documentSnapshot.exists()) {
-//            return new ResponseEntity<>(id, HttpStatus.NOT_FOUND);
-//        }
-//
-//        DocumentReference documentReference = dbFirestore.collection(COURSE_COLLECTION_NAME).document(id);
-//        documentReference.delete().get();
-//        return new ResponseEntity<>(id, HttpStatus.OK);
-//
-//    }
-//
-//    @GetMapping("/others/{ownerId}")
-//    public ResponseEntity<Object> fetchOtherTrips(@PathVariable("ownerId") String ownerId) throws ExecutionException, InterruptedException {
-//
-//        List<QueryDocumentSnapshot> queryDocumentSnapshots = dbFirestore.collection(COURSE_COLLECTION_NAME)
-//                .whereNotEqualTo("ownerId", ownerId).get().get().getDocuments();
-//
-//        List<Course> courses = queryDocumentSnapshots.stream()
-//                .map(QueryDocumentSnapshot::getData)
-//                .map(Course::toCourse)
-//                .collect(Collectors.toList());
-//
-//        return new ResponseEntity<>(courses, HttpStatus.OK);
-//    }
-//
-//    @PostMapping("/like")
-//    public ResponseEntity<Object> likeTrip(@RequestBody LikeCourseDto likeTripDto) throws ExecutionException, InterruptedException {
-//
-//        DocumentSnapshot documentTripSnapshot = dbFirestore.collection(COURSE_COLLECTION_NAME).document(likeTripDto.getCourseId()).get().get();
-//
-//        if (!documentTripSnapshot.exists()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        DocumentSnapshot documentUserSnapshot = dbFirestore.collection(USER_COLLECTION_NAME).document(likeTripDto.getUserId()).get().get();
-//
-//        if (!documentUserSnapshot.exists()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//
-//        Course trip = Course.toCourse(Objects.requireNonNull(documentTripSnapshot.getData()));
-//        List<String> alreadyLike = trip.getLikedBy();
-//        User user = User.toUser(Objects.requireNonNull(documentUserSnapshot.getData()));
-//        if (alreadyLike.contains(user.getEmail())) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//        alreadyLike.add(user.getEmail());
-//        trip.setLikedBy(alreadyLike);
-//
-//        DocumentReference tripRef = dbFirestore.collection(COURSE_COLLECTION_NAME).document(trip.getId());
-//        tripRef.update(trip.generateMap()).get();
-//
-//        DocumentReference documentReference = dbFirestore.collection(USER_COLLECTION_NAME).document(likeTripDto.getUserId());
-//        List<String> userFavorites = user.getFavorites();
-//        userFavorites.add(likeTripDto.getCourseId());
-//        user.setFavorites(userFavorites);
-//        documentReference.update(user.generateMap()).get();
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }        
-//
-//    @PostMapping("/unlike")
-//    public ResponseEntity<Object> unlikeTrip(@RequestBody LikeCourseDto likeTripDto) throws ExecutionException, InterruptedException {
-//
-//        DocumentSnapshot documentTripSnapshot = dbFirestore.collection(COURSE_COLLECTION_NAME).document(likeTripDto.getCourseId()).get().get();
-//
-//        if (!documentTripSnapshot.exists()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        DocumentSnapshot documentUserSnapshot = dbFirestore.collection(USER_COLLECTION_NAME).document(likeTripDto.getUserId()).get().get();
-//
-//        if (!documentUserSnapshot.exists()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//
-//        Course trip = Course.toCourse(Objects.requireNonNull(documentTripSnapshot.getData()));
-//        List<String> alreadyLike = trip.getLikedBy();
-//        User user = User.toUser(Objects.requireNonNull(documentUserSnapshot.getData()));
-//        if (!alreadyLike.contains(user.getEmail())) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//        alreadyLike.remove(user.getEmail());
-//        trip.setLikedBy(alreadyLike);
-//
-//        DocumentReference tripRef = dbFirestore.collection(COURSE_COLLECTION_NAME).document(trip.getId());
-//        tripRef.update(trip.generateMap()).get();
-//
-//        DocumentReference documentReference = dbFirestore.collection(USER_COLLECTION_NAME).document(likeTripDto.getUserId());
-//        List<String> userFavorites = user.getFavorites();
-//        userFavorites.remove(likeTripDto.getCourseId());
-//        user.setFavorites(userFavorites);
-//        documentReference.update(user.generateMap()).get();
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+	@PutMapping
+	public ResponseEntity<Object> updateCourse(@RequestBody Course course) {
+		Course response = courseRepository.save(course);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@GetMapping("/{courseId}")
+	public ResponseEntity<Course> getCourse(@PathVariable("courseId") String courseId) {
+		Optional<Course> course = courseRepository.findById(courseId);
+		return course.map(c -> new ResponseEntity<>(c, HttpStatus.OK))
+				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+	}
+
+	@DeleteMapping("/{courseId}")
+	public ResponseEntity<Object> deleteCourse(@PathVariable("courseId") String courseId) {
+		courseRepository.deleteById(courseId);
+		return new ResponseEntity<>(courseId, HttpStatus.OK);
+
+	}
+
+	@GetMapping("/others/{ownerId}")
+	public ResponseEntity<Object> fetchOtherTrips(@PathVariable("ownerId") String ownerId) {
+
+		return new ResponseEntity<>(courseRepository.findCourseByOwnerId(ownerId), HttpStatus.OK);
+	}
+
+	@PostMapping("/like")
+	public ResponseEntity<Object> likeTrip(@RequestBody LikeCourseDto likeCourseDto) {
+
+		Optional<Course> courseOpt = courseRepository.findById(likeCourseDto.getCourseId());
+		if (courseOpt.isPresent()) {
+			Course course = courseOpt.get();
+			List<String> alreadyLike = course.getLikedBy();
+			if (alreadyLike == null) {
+				alreadyLike = new ArrayList<>();
+			}
+			Optional<User> userOpt = userRepository.findById(likeCourseDto.getUserId());
+			if (userOpt.isPresent()) {
+				User user = userOpt.get();
+				if (alreadyLike.contains(user.getEmail())) {
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				}
+				alreadyLike.add(user.getEmail());
+				course.setLikedBy(alreadyLike);
+				courseRepository.save(course);
+			}
+		}
+
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@PostMapping("/unlike")
+	public ResponseEntity<Object> unlikeTrip(@RequestBody LikeCourseDto likeCourseDto) {
+		Optional<Course> courseOpt = courseRepository.findById(likeCourseDto.getCourseId());
+		if (courseOpt.isPresent()) {
+			Course course = courseOpt.get();
+			List<String> alreadyLike = course.getLikedBy();
+			if (alreadyLike == null) {
+				alreadyLike = new ArrayList<>();
+			}
+			Optional<User> userOpt = userRepository.findById(likeCourseDto.getUserId());
+			if (userOpt.isPresent()) {
+				User user = userOpt.get();
+				if (alreadyLike.contains(user.getEmail())) {
+					alreadyLike.remove(user.getEmail());
+				}			
+				course.setLikedBy(alreadyLike);
+				courseRepository.save(course);
+				return new ResponseEntity<>(HttpStatus.OK);
+			}
+		}		 
+
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
 }
