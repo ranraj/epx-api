@@ -13,41 +13,5 @@ public class User {
     private String email;
     private String password;
     private String username;
-    private List<String> favorites;
-
-    public static User toUser(Map<String, Object> map) {
-        User user = new User();
-
-        user.email = (String) map.get("email");
-        user.password = (String) map.get("password");
-        user.username = (String) map.get("username");
-        user.favorites = (List<String>) map.get("favorites");
-
-        return user;
-    }
-
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-
-        map.put("email", email);
-        map.put("password", password);
-        map.put("username", username);
-        map.put("favorites", favorites);
-
-        return map;
-    }
-
-    public Map<String, Object> generateMap() {
-        Map<String, Object> map = new HashMap<>();
-
-        if (email != null)
-            map.put("email", email);
-        if (password != null)
-            map.put("password", password);
-        if (username != null)
-            map.put("username", username);
-        if (favorites != null)
-            map.put("favorites", favorites);
-        return map;
-    }
+    private List<String> favorites;    
 }
