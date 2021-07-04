@@ -1,9 +1,8 @@
 package com.cisco.epx.api.model;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.springframework.data.annotation.Id;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -12,9 +11,10 @@ import lombok.experimental.Accessors;
 @Accessors
 public class ExamQuestion {
     
+	@Id
     private Integer id;
     private String description;
-    private String courseId;            
+    private String chapterId;            
     private AnswerType answerType;
     private List<AnswerChoise> choices;
     private String answer;

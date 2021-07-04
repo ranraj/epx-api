@@ -13,6 +13,7 @@ public class Course {
 	@Id
     private String id;
     private String ownerId;
+    private String title;   
     private String name;
     private String photo;
     private List<String> tags;    
@@ -20,5 +21,7 @@ public class Course {
     private double cost;
     private int rating;
     private String description;    
-    private List<String> likedBy;    
+    private List<String> likedBy;  
+    private float version;
+    private boolean deleted;
 }

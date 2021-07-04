@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cisco.epx.api.dto.LikeCourseDto;
 import com.cisco.epx.api.model.Course;
+import com.cisco.epx.api.model.CourseChapter;
 import com.cisco.epx.api.model.User;
+import com.cisco.epx.api.repository.CourseChapterRepository;
 import com.cisco.epx.api.repository.CourseRepository;
 import com.cisco.epx.api.repository.ReactiveCourseRepository;
 import com.cisco.epx.api.repository.UserRepository;
@@ -32,6 +34,9 @@ public class CourseController {
 
 	@Autowired
 	private CourseRepository courseRepository;
+	
+	@Autowired
+	private CourseChapterRepository courseChapterRepository;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -135,5 +140,34 @@ public class CourseController {
 		}
 
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+	@PostMapping("/{courseId}/chapters")
+	public ResponseEntity<Object> saveChapter(@PathVariable("courseId") String courseId,@RequestBody CourseChapter chapter) {
+		if(!courseRepository.findById(courseId).isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		chapter.setCourseId(courseId);
+		return new ResponseEntity<>(courseChapterRepository.save(chapter), HttpStatus.OK);
+	}
+	
+	@GetMapping("/{courseId}/chapters")
+	public ResponseEntity<Object> getAllChapters(@PathVariable("courseId") String courseId) {
+		return new ResponseEntity<>(courseChapterRepository.findByCourseId(courseId), HttpStatus.OK);
+	}
+	
+	@GetMapping("/{courseId}/chapters/{chapterId}")
+	public ResponseEntity<Object> getChapterId(@PathVariable("courseId") String courseId,@PathVariable("chapterId") String chapterId) {
+		if(!courseRepository.findById(courseId).isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(courseChapterRepository.findByCourseIdAndChapterId(courseId,chapterId), HttpStatus.OK);
+	}
+	@DeleteMapping("/{courseId}/chapters/{chapterId}")
+	public ResponseEntity<Object> deleteChapterId(@PathVariable("courseId") String courseId,@PathVariable("chapterId") String chapterId) {
+		if(!courseRepository.findById(courseId).isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		courseChapterRepository.deleteById(chapterId);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }
