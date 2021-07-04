@@ -3,10 +3,10 @@ package com.cisco.epx.api.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +21,10 @@ import com.cisco.epx.api.dto.LikeCourseDto;
 import com.cisco.epx.api.model.Course;
 import com.cisco.epx.api.model.User;
 import com.cisco.epx.api.repository.CourseRepository;
+import com.cisco.epx.api.repository.ReactiveCourseRepository;
 import com.cisco.epx.api.repository.UserRepository;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
+
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/course")
@@ -34,6 +35,19 @@ public class CourseController {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private ReactiveCourseRepository reactiveCourseRepository;
+
+	@GetMapping("/list")
+	public Flux<Course> getAllCoursesReactive() {
+		return reactiveCourseRepository.findAll();
+	}
+
+	@GetMapping(value = "/stream/list", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<Course> getAllCoursesReactiveStream() {
+		return reactiveCourseRepository.findAll();
+	}
 
 	@GetMapping
 	public ResponseEntity<Object> getAllCourses() {
@@ -113,12 +127,12 @@ public class CourseController {
 				User user = userOpt.get();
 				if (alreadyLike.contains(user.getEmail())) {
 					alreadyLike.remove(user.getEmail());
-				}			
+				}
 				course.setLikedBy(alreadyLike);
 				courseRepository.save(course);
 				return new ResponseEntity<>(HttpStatus.OK);
 			}
-		}		 
+		}
 
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
