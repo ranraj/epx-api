@@ -157,9 +157,7 @@ public class CourseController {
 	
 	@GetMapping("/{courseId}/chapters/{chapterId}")
 	public ResponseEntity<Object> getChapterId(@PathVariable("courseId") String courseId,@PathVariable("chapterId") String chapterId) {
-		if(!courseRepository.findById(courseId).isPresent()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		
 		return new ResponseEntity<>(courseChapterRepository.findByCourseIdAndChapterId(courseId,chapterId), HttpStatus.OK);
 	}
 	@DeleteMapping("/{courseId}/chapters/{chapterId}")

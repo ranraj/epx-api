@@ -13,6 +13,6 @@ public interface CourseChapterRepository extends MongoRepository<CourseChapter, 
 	@Query("{courseId : ?0}")
 	List<CourseChapter> findByCourseId(String courseId);
 	
-	@Query("{courseId : ?0,chapterId : ?1}")
-	List<CourseChapter> findByCourseIdAndChapterId(String courseId,String chapterId);
+	@Query("{courseId : ?0,id : ?1}")
+	CourseChapter findByCourseIdAndChapterId(String courseId,String chapterId);
 }
