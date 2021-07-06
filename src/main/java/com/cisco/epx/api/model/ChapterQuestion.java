@@ -3,16 +3,18 @@ package com.cisco.epx.api.model;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors
-public class ExamQuestion {
+@Document
+public class ChapterQuestion {
     
 	@Id
-    private Integer id;
+    private String id;
     private String description;
     private String chapterId;            
     private AnswerType answerType;
@@ -21,5 +23,10 @@ public class ExamQuestion {
     private String createdBy;
     //private Date created;
     //private Date updated;
-    private String updatedBy;  
+    private String updatedBy; 
+    private float version;
+    
+//    public ChapterQuestion() {    	
+//    	id = UUID.randomUUID().toString();
+//    }
 }

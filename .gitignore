@@ -12,3 +12,4 @@ buildNumber.properties
 *.DS_Store*
 .project
 .settings/
+**/**-dev.properties

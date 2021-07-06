@@ -6,11 +6,10 @@ import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import com.cisco.epx.api.model.Course;
+import com.cisco.epx.api.model.ExamChapter;
 
-public interface CourseRepository extends MongoRepository<Course, String>{
+public interface ExamRepository extends MongoRepository<ExamChapter, String>{
 	
-	@Query("{ownerId : ?0}")
-	List<Course> findCourseByOwnerId(String ownerId);
-		
+	@Query("{userId : ?0}")
+	List<ExamChapter> findByUserId(String userId);
 }

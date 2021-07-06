@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cisco.epx.api.dto.LoginRequest;
@@ -37,7 +38,15 @@ public class UserController {
 
 		return new ResponseEntity<>(responseEntity, HttpStatus.OK);
 	}
+	
+	@GetMapping("/search")
+	public ResponseEntity<Object> getUserByEmail(@RequestParam("emailId") String emailId) {
 
+		Optional<User> responseEntity = usersRepository.findUserByEmail(emailId);
+
+		return new ResponseEntity<>(responseEntity, HttpStatus.OK);
+	}
+	
 	@PostMapping
 	public ResponseEntity<Object> register(@RequestBody User user) {
 		User responseEntity = usersRepository.save(user);
@@ -66,6 +75,8 @@ public class UserController {
 		responseEntity.setPassword(null);
 		return new ResponseEntity<>(responseEntity, HttpStatus.OK);
 	}
+	
+	
 
 	@ExceptionHandler(DuplicateKeyException.class)
 	public ResponseEntity<ResponseError> handleException(DuplicateKeyException e) {

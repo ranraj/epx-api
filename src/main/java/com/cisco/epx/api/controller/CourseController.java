@@ -88,7 +88,7 @@ public class CourseController {
 	}
 
 	@GetMapping("/others/{ownerId}")
-	public ResponseEntity<Object> fetchOtherTrips(@PathVariable("ownerId") String ownerId) {
+	public ResponseEntity<Object> fetchOtherCourse(@PathVariable("ownerId") String ownerId) {
 
 		return new ResponseEntity<>(courseRepository.findCourseByOwnerId(ownerId), HttpStatus.OK);
 	}
@@ -119,7 +119,7 @@ public class CourseController {
 	}
 
 	@PostMapping("/unlike")
-	public ResponseEntity<Object> unlikeTrip(@RequestBody LikeCourseDto likeCourseDto) {
+	public ResponseEntity<Object> unlikeCourse(@RequestBody LikeCourseDto likeCourseDto) {
 		Optional<Course> courseOpt = courseRepository.findById(likeCourseDto.getCourseId());
 		if (courseOpt.isPresent()) {
 			Course course = courseOpt.get();

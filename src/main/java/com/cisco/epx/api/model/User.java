@@ -19,4 +19,6 @@ public class User {
 	@Indexed(unique = true)
 	private String username;
 	private List<String> favorites;
+	private Provider provider;
+	private List<EnrolledCourse> enrolledCourses;
 }
