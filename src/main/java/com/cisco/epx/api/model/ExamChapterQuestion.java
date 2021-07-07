@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Accessors
 public class ExamChapterQuestion {
 	@Id
-	private int score;
+	private double score;
 	private String questionId;
 	private String answer;
 	private List<String> answers;
