@@ -1,34 +1,37 @@
 sudo: required
 language: java
 jdk: openjdk8
+
 services:
 - docker
+
 env:
   global:
   - COMMIT=${TRAVIS_COMMIT::7}
   - secure: j4oVaaTnmTBNVlRzUEnAHvfWW7Bd2KLgyZyMioO8zDvqbapcFz9kurIHRAMb3sPLxboC07G3MiK4sEF21p040NNEU9OucHt5XOlRo/+LbkY276+KJAyqOIWsScBHf2wtfucGf7HsgAi7NXJWY+uYAbjLdUNzqNThXjqLgBD91NyG6tYdOO2zgAV7rLIKJsZmGEUt+nKmez6szX161IgZ4WQwSbnfm2NQu4kB6J4eAfVl6cJ774OFty6HEDh+zJcIEjDhOT6VkyjcOELsOKzjtxgamv7pCSBG3pDLUtRARquvSj6+ms6lQVLmU6VunbttQFI8YRt+WAN9QCZJS7FzvlmoBU4Clc1Ab3z97j+jztM9Pkp16sRgaC2jgsERdXlfAbGWnxRLJpD7Id3JJ/mn2D6KHbMiYB5WkwW35US0bk2P8gjm6hGAE/uu1etvp6Fw+Q4XQaRLc+wxPpf5IXXFyQg6UmYIypmS2v+ePS2jTXwkkRL4PVuXDU2I+0yOUK9+mY502qA7ONJLw6DCb45qQE+QCz3VhEKQLwk7ANKFy87vJLMUiJpA0TRcnySQeV8BDngNvD7HROqOR4tSAIudJmenio6PVDb/V3G3kujRzyL5tT0f8cosS9Yi7WNBJtm5c5OrMiztXmroEY8lJfZDt6wXmCUcpC9zAGoVZkS4Plk=
   - secure: Qwf2LeDGl0z7F5priszq/AAjD5nwX1w5w2GLDa9YSSIijLeI5Y3M93OXzYH2jCLPKO02lLo1s/rs0XcGfwWKbdwrE1F3UNNdz4Y1Dav93GRwG/qXbkzJwaef1ConMUhkmoAdVgrRvj00spfkpeXtI9d16v5dN9uqLVdvsB4MLaBd26iwTCYAuB2d7ec9KGngCzVq+SoStr9M28PIWAJLpIYWBwqgTPkLs+AL5s88gNus6+TKbUwrMp9VEgTWGJbK7j2e32OxJQSZuOPMZ9CFhgE6H8OLcaCnZbfCsKwI5yIBQseMTR0K3HJCmjv9x2IXjKf5YwHM+zoJdDfrpONnxwd1mhPnzsyG98hjmmPNzuY6AoEsFpXcnqbS3HFNwVu4tnWeNNIN0usM7kOpxy2cSSk4CZCAo29Ih3gOJN7TDBbJSnV/u366gEg5cNPMsCl1Bw+LWBuMeuok1XMdhyVWFPaMB5pIRLYcEVsqLPjJ2NmTEEI0tQWT1ewABmUP1UueUtXHwxaB0LZyzsdjXHrinUHWroiixJLJvooxfrt5Pp9dJeSmjNttiTO63+aAycarzG9ripu49AuQDiRPRXQJZm1khbtNPjQvQAiCCb6nFlP8KR9KdTH22ZTPZe427xxsCzYi0bj5FqxfsOYLyAqR3yXPvdW4jJPoQxi0VVuLIrI=
   - secure: D7xqZJmJlcT5jKJBojoKoTQ1rHGn42YoYSlZgR0kYK2L8mqZQ3/gRxYQ9dqhDuVAaOH/+RyZxDgC9vWyV5GaqaK2lqQogAYX6C3tOGGLb1P7c1b4O1Bt+0PrYcF+Z9HZm1TqfxR8TfHGiCU6OsEiTwnX0ggsy1XI21tzJl63Pvu6vC30mQSIeMUtza6fw3koxEQs5mktLNTMHW45sOQsMu2zbI3U6Mt98CwgSi0eyGbqnUiP99kzGqJdPx2Kj4nv9YceKCb0ijOnVbySgjpoqKbjt5FpQ87vmwr/Jcchsl1SQzJWayPHQlsjRjCCol+I6HmQFpCNDPfmn0oKnS0djKyBk36yrlBFcFNYWQrsNtGBKhH0YXg3y9x0rFo7n0S3oFwtaR5TStFJ7xD8jJVMLImx2cLxAl62wz+zGXlLOFgZROybzsCHSQ9b3uUi1b9RKAUv8SsLea0zpbaaHgg+sJKYA1g4YGH8t5FClF1WXUaT3ZMN3eni9Lu4MNr4FPLk2qh0Fo7/c7tGSVBFe/oR/qN/dVSa2k7JD618f5C+E6FSAUGmK46PXU+Gvd1MrTjZyDlLYtTmlsEbVXkpBo+pcQgemrr/tMAM7deKZYjHCn9kH3vWrlsPzSbtm8U5P2xgqjD3LRM1y0fNISSM8sRmvvS8ccFJDAUkP1GbveCoNss=
+
 before_install:
 - cp .travis.settings.xml $HOME/.m2/settings.xml
 - chmod +x mvnw
-- docker pull openjdk:8-jdk-alpine
 
 script:
-- mvn heroku:deploy
+  - ./mvnw clean install -B
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    
+after_success:
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+- export IMAGE_NAME=ranjithrajd/epx-api
+- docker build -t $IMAGE_NAME:$COMMIT .
+- docker tag $IMAGE_NAME:$COMMIT $IMAGE_NAME:$TAG
+- docker push $IMAGE_NAME
 
 deploy:
   provider: heroku
   api_key: "$HEROKU_API_KEY"
   app: epx-api
-
-after_success:
-- docker login -u $DOCKER_USER -p $DOCKER_PASS
-- export TAG='if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH&amp;amp;amp;amp;amp;amp;lt;span
-  data-mce-type="bookmark" style="display:inline-block; width:0px; overflow:hidden;
-  line-height:0;" class="mce_SELRES_start"&amp;amp;amp;amp;amp;amp;gt;&amp;amp;amp;amp;amp;amp;lt;/span&amp;amp;amp;amp;amp;amp;gt;;
-  fi'
-- export IMAGE_NAME=ranjithrajd/epx-api
-- docker build -t $IMAGE_NAME:$COMMIT .
-- docker tag $IMAGE_NAME:$COMMIT $IMAGE_NAME:$TAG
-- docker push $IMAGE_NAME
