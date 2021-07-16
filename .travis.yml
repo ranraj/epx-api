@@ -12,10 +12,16 @@ env:
 before_install:
 - cp .travis.settings.xml $HOME/.m2/settings.xml
 - chmod +x mvnw
+- docker pull openjdk:8-jdk-alpine
+
+script:
+- mvn heroku:deploy
+
 deploy:
   provider: heroku
   api_key: "$HEROKU_API_KEY"
   app: epx-api
+
 after_success:
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 - export TAG='if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH&amp;amp;amp;amp;amp;amp;lt;span
