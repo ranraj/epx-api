@@ -18,10 +18,22 @@
 	<properties>
 		<java.version>8</java.version>
 		<firebase-admin.version>7.0.1</firebase-admin.version>
-	</properties>		
+	</properties>
 
-<modules>
-	<module>epx-model</module>
-	<module>epx-service</module>
-</modules>
+	<modules>
+		<module>epx-model</module>
+		<module>epx-service</module>
+	</modules>
+	
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>https://${env.EPX_ARTIFACTORY}/artifactory/${env.EPX_ARTIFACTORY_REPOSITORY_NAME}-libs-release</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>https://${env.EPX_ARTIFACTORY}/artifactory/${env.EPX_ARTIFACTORY_REPOSITORY_NAME}-libs-snapshot</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 </project>

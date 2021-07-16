@@ -11,7 +11,7 @@
 	</parent>
 	
 	<artifactId>epx-service</artifactId>
-	
+	<packaging>jar</packaging>
 	<name>epx-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>

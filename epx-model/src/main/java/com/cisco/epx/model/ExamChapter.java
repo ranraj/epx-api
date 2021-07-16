@@ -18,5 +18,5 @@ public class ExamChapter {
 	private String status;	// Iscompleted, inprogress, New
 	private List<ExamChapterQuestion> questions;	
 	private String userId;
-	
+		
 }
