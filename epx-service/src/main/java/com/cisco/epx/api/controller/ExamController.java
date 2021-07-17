@@ -50,10 +50,7 @@ public class ExamController {
 	private RestTemplate restTemplate;
 	
 	@Value("${text.similarity.service.url}")
-	private String textSimilarityServiceUrl;
-	
-	@Value("${text.similarity.service.token}")
-	private String textSimilarityServiceToken;
+	private String textSimilarityServiceUrl;	
 	
 	@PostMapping("/users/{userId}")
 	public ResponseEntity<Object> addCourse(@PathVariable("userId") String userId, @RequestBody ExamChapter exam) throws Exception {
@@ -105,10 +102,10 @@ public class ExamController {
 	
 	private TextSimilarityScore getTextSimilarityScore(String text1,String text2) {
 		try {
-		String url = String.format("%s?token={q}&text1={q}&text2={q}&lang=en",textSimilarityServiceUrl);	
+		String url = String.format("%s?&text1={q}&text2={q}&lang=en",textSimilarityServiceUrl);	
 		
 		ResponseEntity<TextSimilarityScore> response = restTemplate
-				.getForEntity(url, TextSimilarityScore.class,textSimilarityServiceToken,text1,text2);
+				.getForEntity(url, TextSimilarityScore.class,text1,text2);
 		return response.getBody();
 		}catch(Exception e) {
 			logger.warn(e.getMessage());

@@ -20,13 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cisco.epx.api.dto.LikeCourseDto;
 import com.cisco.epx.api.repository.CourseChapterRepository;
 import com.cisco.epx.api.repository.CourseRepository;
-import com.cisco.epx.api.repository.ReactiveCourseRepository;
 import com.cisco.epx.api.repository.UserRepository;
 import com.cisco.epx.model.Course;
 import com.cisco.epx.model.CourseChapter;
 import com.cisco.epx.model.User;
 
-import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/course")
@@ -40,19 +38,6 @@ public class CourseController {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private ReactiveCourseRepository reactiveCourseRepository;
-
-	@GetMapping("/list")
-	public Flux<Course> getAllCoursesReactive() {
-		return reactiveCourseRepository.findAll();
-	}
-
-	@GetMapping(value = "/stream/list", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<Course> getAllCoursesReactiveStream() {
-		return reactiveCourseRepository.findAll();
-	}
 
 	@GetMapping
 	public ResponseEntity<Object> getAllCourses() {
