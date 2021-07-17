@@ -1,6 +1,7 @@
 package com.cisco.epx.api;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -12,6 +13,7 @@ import org.springframework.web.filter.CorsFilter;
 
 @SpringBootApplication
 @EnableConfigurationProperties
+@EnableAutoConfiguration
 public class CourseApiApplication {
 
 	public static void main(String[] args) {
