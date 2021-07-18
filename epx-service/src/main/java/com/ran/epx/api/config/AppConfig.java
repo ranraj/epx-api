@@ -5,10 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-import com.ran.epx.api.service.TextSimilarityService;
 import com.ran.epx.api.service.DandelionTextSimilarityService;
 import com.ran.epx.api.service.EpxTextSimilarityService;
-import com.ran.epx.api.service.TextSimilarityDelegator;
+import com.ran.epx.api.service.TextSimilarityService;
 
 @Configuration
 public class AppConfig {
@@ -30,8 +29,4 @@ public class AppConfig {
          return new EpxTextSimilarityService();
     }
 	
-	@Bean
-	public TextSimilarityDelegator textSimilarityDelegator(TextSimilarityService textSimilarityService) {
-		return new TextSimilarityDelegator(textSimilarityService);
-	}
 }
