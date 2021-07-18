@@ -1,4 +1,4 @@
-package com.cisco.epx.model;
+package com.ran.epx.model;
 
 import java.util.ArrayList;
 import java.util.List;

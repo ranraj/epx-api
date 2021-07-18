@@ -1,4 +1,4 @@
-package com.cisco.epx.api.controller;
+package com.ran.epx.api.controller;
 
 import java.util.Optional;
 
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cisco.epx.api.dto.LoginRequest;
-import com.cisco.epx.api.error.ResponseError;
-import com.cisco.epx.api.repository.UserRepository;
-import com.cisco.epx.model.User;
+import com.ran.epx.api.dto.LoginRequest;
+import com.ran.epx.api.error.ResponseError;
+import com.ran.epx.api.repository.UserRepository;
+import com.ran.epx.model.User;
 
 @RestController
 @RequestMapping("/user")

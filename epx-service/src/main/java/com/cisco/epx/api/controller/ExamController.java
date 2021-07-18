@@ -1,4 +1,4 @@
-package com.cisco.epx.api.controller;
+package com.ran.epx.api.controller;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -18,15 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.cisco.epx.api.repository.CourseChapterRepository;
-import com.cisco.epx.api.repository.CourseRepository;
-import com.cisco.epx.api.repository.ExamRepository;
-import com.cisco.epx.api.repository.UserRepository;
-import com.cisco.epx.model.ChapterQuestion;
-import com.cisco.epx.model.CourseChapter;
-import com.cisco.epx.model.ExamChapter;
-import com.cisco.epx.model.ExamChapterQuestion;
-import com.cisco.epx.model.TextSimilarityScore;
+import com.ran.epx.api.repository.CourseChapterRepository;
+import com.ran.epx.api.repository.CourseRepository;
+import com.ran.epx.api.repository.ExamRepository;
+import com.ran.epx.api.repository.UserRepository;
+import com.ran.epx.model.ChapterQuestion;
+import com.ran.epx.model.CourseChapter;
+import com.ran.epx.model.ExamChapter;
+import com.ran.epx.model.ExamChapterQuestion;
+import com.ran.epx.model.TextSimilarityScore;
 
 @RestController
 @RequestMapping("/exams")

@@ -1,4 +1,4 @@
-package com.cisco.epx.api.controller;
+package com.ran.epx.api.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cisco.epx.api.dto.LikeCourseDto;
-import com.cisco.epx.api.repository.CourseChapterRepository;
-import com.cisco.epx.api.repository.CourseRepository;
-import com.cisco.epx.api.repository.UserRepository;
-import com.cisco.epx.model.Course;
-import com.cisco.epx.model.CourseChapter;
-import com.cisco.epx.model.User;
+import com.ran.epx.api.dto.LikeCourseDto;
+import com.ran.epx.api.repository.CourseChapterRepository;
+import com.ran.epx.api.repository.CourseRepository;
+import com.ran.epx.api.repository.UserRepository;
+import com.ran.epx.model.Course;
+import com.ran.epx.model.CourseChapter;
+import com.ran.epx.model.User;
 
 
 @RestController

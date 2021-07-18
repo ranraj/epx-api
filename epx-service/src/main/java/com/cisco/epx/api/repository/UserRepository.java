@@ -1,4 +1,4 @@
-package com.cisco.epx.api.repository;
+package com.ran.epx.api.repository;
 
 
 import java.util.Optional;
@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import com.cisco.epx.model.User;
+import com.ran.epx.model.User;
 
 public interface UserRepository extends MongoRepository<User, String>{
 	@Query("{ '_id' : ?0 }")

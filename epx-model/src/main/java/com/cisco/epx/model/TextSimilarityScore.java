@@ -1,4 +1,4 @@
-package com.cisco.epx.model;
+package com.ran.epx.model;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

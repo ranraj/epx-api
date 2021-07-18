@@ -1,4 +1,4 @@
-package com.cisco.epx.api.repository;
+package com.ran.epx.api.repository;
 
 
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import com.cisco.epx.model.Course;
+import com.ran.epx.model.Course;
 
 public interface CourseRepository extends MongoRepository<Course, String>{
 	

@@ -1,4 +1,4 @@
-package com.cisco.epx.api.config;
+package com.ran.epx.api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
