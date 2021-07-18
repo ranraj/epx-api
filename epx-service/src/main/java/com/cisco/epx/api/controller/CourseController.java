@@ -79,7 +79,7 @@ public class CourseController {
 	}
 
 	@PostMapping("/like")
-	public ResponseEntity<Object> likeTrip(@RequestBody LikeCourseDto likeCourseDto) {
+	public ResponseEntity<Object> likeCourse(@RequestBody LikeCourseDto likeCourseDto) {
 
 		Optional<Course> courseOpt = courseRepository.findById(likeCourseDto.getCourseId());
 		if (courseOpt.isPresent()) {
@@ -91,10 +91,10 @@ public class CourseController {
 			Optional<User> userOpt = userRepository.findById(likeCourseDto.getUserId());
 			if (userOpt.isPresent()) {
 				User user = userOpt.get();
-				if (alreadyLike.contains(user.getEmail())) {
+				if (alreadyLike.contains(user.getId())) {
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 				}
-				alreadyLike.add(user.getEmail());
+				alreadyLike.add(user.getId());
 				course.setLikedBy(alreadyLike);
 				courseRepository.save(course);
 			}
@@ -115,8 +115,8 @@ public class CourseController {
 			Optional<User> userOpt = userRepository.findById(likeCourseDto.getUserId());
 			if (userOpt.isPresent()) {
 				User user = userOpt.get();
-				if (alreadyLike.contains(user.getEmail())) {
-					alreadyLike.remove(user.getEmail());
+				if (alreadyLike.contains(user.getId())) {
+					alreadyLike.remove(user.getId());
 				}
 				course.setLikedBy(alreadyLike);
 				courseRepository.save(course);
