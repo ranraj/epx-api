@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
+import com.ran.epx.api.dto.TextSimilarityScore;
 import com.ran.epx.api.repository.CourseChapterRepository;
 import com.ran.epx.api.repository.CourseRepository;
 import com.ran.epx.api.repository.ExamRepository;
 import com.ran.epx.api.repository.UserRepository;
+import com.ran.epx.api.service.TextSimilarityService;
 import com.ran.epx.model.ChapterQuestion;
 import com.ran.epx.model.CourseChapter;
 import com.ran.epx.model.ExamChapter;
 import com.ran.epx.model.ExamChapterQuestion;
-import com.ran.epx.model.TextSimilarityScore;
 
 @RestController
 @RequestMapping("/exams")
@@ -46,11 +46,13 @@ public class ExamController {
 	private UserRepository userRepository;
 	@Autowired
 	private CourseChapterRepository courseChapterRepository;
-	@Autowired
-	private RestTemplate restTemplate;
+		
 	
 	@Value("${text.similarity.service.url}")
 	private String textSimilarityServiceUrl;	
+				
+	@Autowired	
+	private TextSimilarityService textSimilarityService;
 	
 	@PostMapping("/users/{userId}")
 	public ResponseEntity<Object> addCourse(@PathVariable("userId") String userId, @RequestBody ExamChapter exam) throws Exception {
@@ -101,16 +103,8 @@ public class ExamController {
 	}
 	
 	private TextSimilarityScore getTextSimilarityScore(String text1,String text2) {
-		try {
-		String url = String.format("%s?&text1={q}&text2={q}&lang=en",textSimilarityServiceUrl);	
 		
-		ResponseEntity<TextSimilarityScore> response = restTemplate
-				.getForEntity(url, TextSimilarityScore.class,text1,text2);
-		return response.getBody();
-		}catch(Exception e) {
-			logger.warn(e.getMessage());
-		}
-		return null;
+		return textSimilarityService.getTextSimilarity(text1, text2,"en");
 	}
 	
 	@GetMapping("/users/{userId}")

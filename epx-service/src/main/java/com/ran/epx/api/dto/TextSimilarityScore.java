@@ -1,4 +1,4 @@
-package com.ran.epx.model;
+package com.ran.epx.api.dto;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
