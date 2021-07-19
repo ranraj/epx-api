@@ -24,12 +24,12 @@ public class DandelionTextSimilarityService implements TextSimilarityService {
 
 	@Override
 	public TextSimilarityScore getTextSimilarity(String text1, String text2, String lang) {
-
+				
 		try {
 			String url = String.format("%s?token={q}&text1={q}&text2={q}&lang=en", textSimilarityServiceUrl);
 
 			ResponseEntity<TextSimilarityScore> response = restTemplate.getForEntity(url, TextSimilarityScore.class,
-					textSimilarityServiceToken, text1, text2);
+					textSimilarityServiceToken, text1, text2);			
 			return response.getBody();
 		} catch (Exception e) {
 			logger.warn(e.getMessage());

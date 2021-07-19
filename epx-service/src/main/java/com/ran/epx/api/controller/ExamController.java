@@ -77,7 +77,7 @@ public class ExamController {
 			}else {
 				//Text comparison
 				
-				TextSimilarityScore textSimilarityScore = getTextSimilarityScore(chapterQuestion.getAnswer(),question.getAnswer());
+				TextSimilarityScore textSimilarityScore = textSimilarityService.getTextSimilarity(chapterQuestion.getAnswer(),question.getAnswer(),"en");
 				if(textSimilarityScore == null) {
 					return new ResponseEntity<>("Gradding System failure, Try after sometime",HttpStatus.INTERNAL_SERVER_ERROR);
 				}
@@ -102,10 +102,7 @@ public class ExamController {
 		return new ResponseEntity<>(examResult, HttpStatus.OK);
 	}
 	
-	private TextSimilarityScore getTextSimilarityScore(String text1,String text2) {
-		
-		return textSimilarityService.getTextSimilarity(text1, text2,"en");
-	}
+	 
 	
 	@GetMapping("/users/{userId}")
 	public ResponseEntity<Object> getExams(@PathVariable("userId") String userId) {
