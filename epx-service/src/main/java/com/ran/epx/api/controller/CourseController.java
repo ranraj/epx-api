@@ -26,10 +26,11 @@ import com.ran.epx.api.dto.LikeCourseDto;
 import com.ran.epx.api.repository.CourseChapterRepository;
 import com.ran.epx.api.repository.CourseRepository;
 import com.ran.epx.api.repository.UserRepository;
+import com.ran.epx.api.service.CourseChapterService;
+import com.ran.epx.api.service.CourseService;
 import com.ran.epx.model.Course;
 import com.ran.epx.model.CourseChapter;
 import com.ran.epx.model.User;
-
 
 @RestController
 @RequestMapping("/course")
@@ -37,26 +38,33 @@ public class CourseController {
 
 	@Autowired
 	private CourseRepository courseRepository;
-	
+
+	@Autowired
+	private CourseService courseService;
+
+	@Autowired
+	private CourseChapterService courseChapterService;
+
 	@Autowired
 	private CourseChapterRepository courseChapterRepository;
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	/**
 	 * No pagination support
+	 * 
 	 * @deprecated
 	 * @return
 	 */
 	@GetMapping
-	public ResponseEntity<Object> getAllCourses() {		
+	public ResponseEntity<Object> getAllCourses() {
 		return new ResponseEntity<>(courseRepository.findAll(), HttpStatus.OK);
 	}
-	
+
 	/**
-	 * Search by title or default all published courses
-	 * Only show published courses
+	 * Search by title or default all published courses Only show published courses
+	 * 
 	 * @param title
 	 * @param page
 	 * @param size
@@ -64,32 +72,31 @@ public class CourseController {
 	 */
 	@GetMapping("/search")
 	public ResponseEntity<Object> getAllCourseSearch(@RequestParam(required = false) String title,
-		      @RequestParam(defaultValue = "0") int page,
-		      @RequestParam(defaultValue = "10") int size) {		
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 		Pageable paging = PageRequest.of(page, size);
 		Page<Course> pageTuts;
-	      if (title == null)
-	        pageTuts = courseRepository.findByPublished(true,paging);
-	      else
-	        pageTuts = courseRepository.findByTitleContainingIgnoreCase(title, paging,true);
+		if (title == null)
+			pageTuts = courseRepository.findByPublished(true, paging);
+		else
+			pageTuts = courseRepository.findByTitleContainingIgnoreCase(title, paging, true);
 
-	      List<Course> courses = pageTuts.getContent();
+		List<Course> courses = pageTuts.getContent();
 
-	      Map<String, Object> response = new HashMap<>();
-	      response.put("courses", courses);
-	      response.put("currentPage", pageTuts.getNumber());
-	      response.put("totalItems", pageTuts.getTotalElements());
-	      response.put("totalPages", pageTuts.getTotalPages());
+		Map<String, Object> response = new HashMap<>();
+		response.put("courses", courses);
+		response.put("currentPage", pageTuts.getNumber());
+		response.put("totalItems", pageTuts.getTotalElements());
+		response.put("totalPages", pageTuts.getTotalPages());
 
-	      return new ResponseEntity<>(response, HttpStatus.OK);		
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
-	
-	//TODO : Show All course in the system (Published and Non published)
-	//TODO : Show My own courses, My enrolled courses
-	
+
+	// TODO : Show All course in the system (Published and Non published)
+	// TODO : Show My own courses, My enrolled courses
+
 	@PostMapping
 	public ResponseEntity<Object> addCourse(@RequestBody Course course) {
-		courseRepository.save(course);
+		course = courseService.addCourse(course);
 
 		return new ResponseEntity<>(course, HttpStatus.OK);
 	}
@@ -169,28 +176,43 @@ public class CourseController {
 
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
+
 	@PostMapping("/{courseId}/chapters")
-	public ResponseEntity<Object> saveChapter(@PathVariable("courseId") String courseId,@RequestBody CourseChapter chapter) {
-		if(!courseRepository.findById(courseId).isPresent()) {
+	public ResponseEntity<Object> saveChapter(@PathVariable("courseId") String courseId,
+			@RequestBody CourseChapter chapter) {
+		if (!courseRepository.findById(courseId).isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		System.out.println("---");
+		System.out.println(chapter.getContent());
 		chapter.setCourseId(courseId);
-		return new ResponseEntity<>(courseChapterRepository.save(chapter), HttpStatus.OK);
+		return new ResponseEntity<>(courseChapterService.addChapter(chapter), HttpStatus.OK);
 	}
-	
+
+	@PutMapping("/{courseId}/chapters/{chapterId}")
+	public ResponseEntity<Object> updateChapter(@PathVariable("courseId") String courseId,@PathVariable("chapterId") String chapterId,@RequestBody CourseChapter chapter) {
+		chapter.setId(chapterId);
+		CourseChapter response = courseChapterService.updateChapter(chapter);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
 	@GetMapping("/{courseId}/chapters")
 	public ResponseEntity<Object> getAllChapters(@PathVariable("courseId") String courseId) {
 		return new ResponseEntity<>(courseChapterRepository.findByCourseId(courseId), HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{courseId}/chapters/{chapterId}")
-	public ResponseEntity<Object> getChapterId(@PathVariable("courseId") String courseId,@PathVariable("chapterId") String chapterId) {
-		
-		return new ResponseEntity<>(courseChapterRepository.findByCourseIdAndChapterId(courseId,chapterId), HttpStatus.OK);
+	public ResponseEntity<Object> getChapterId(@PathVariable("courseId") String courseId,
+			@PathVariable("chapterId") String chapterId) {
+
+		return new ResponseEntity<>(courseChapterRepository.findByCourseIdAndChapterId(courseId, chapterId),
+				HttpStatus.OK);
 	}
+
 	@DeleteMapping("/{courseId}/chapters/{chapterId}")
-	public ResponseEntity<Object> deleteChapterId(@PathVariable("courseId") String courseId,@PathVariable("chapterId") String chapterId) {
-		if(!courseRepository.findById(courseId).isPresent()) {
+	public ResponseEntity<Object> deleteChapterId(@PathVariable("courseId") String courseId,
+			@PathVariable("chapterId") String chapterId) {
+		if (!courseRepository.findById(courseId).isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		courseChapterRepository.deleteById(chapterId);
