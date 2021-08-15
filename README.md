@@ -37,3 +37,11 @@ Test
 ```
 https://localhost:8080/actuator/health
 ```
+CI/CD : Travis & Heroku
+
+Heroku logs
+
+```
+cd epx-api-service/epx-service
+heroku logs --tail
+```      
