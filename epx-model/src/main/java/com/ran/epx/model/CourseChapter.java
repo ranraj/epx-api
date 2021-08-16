@@ -17,6 +17,8 @@ public class CourseChapter {
     private String id;   
 	private String name;
     private String title;
+    private ContentProvider contentProvider;
+    private ChapterContent content;
     private String videoLink;
     private List<String> tags;                  
     private List<ChapterQuestion> examQuestions;   
