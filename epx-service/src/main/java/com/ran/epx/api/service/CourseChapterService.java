@@ -29,7 +29,7 @@ public class CourseChapterService {
 		return chapter;
 	}
 
-	private CourseChapter createVideoLinkId(CourseChapter courseChapter) {
+	public CourseChapter createVideoLinkId(CourseChapter courseChapter) {
 		ContentProvider contentProvider = courseChapter.getContentProvider();
 
 		if (contentProvider == ContentProvider.YOUTUBE) {
