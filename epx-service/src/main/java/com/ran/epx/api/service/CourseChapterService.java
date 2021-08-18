@@ -1,5 +1,8 @@
 package com.ran.epx.api.service;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +14,7 @@ import com.ran.epx.model.CourseChapter;
 @Service
 public class CourseChapterService {
 
+	private static final String YOUTU_REGEX = "^.*(youtu\\.be\\/|vi?\\/|u\\/\\w\\/|embed\\/|\\?vi?=|\\&vi?=)([^#\\&\\?]*).*";
 	private static final String WATCH = "watch";
 	private static final String EMBED = "embed";
 	private static final String YOUTUBE = "youtube";
@@ -18,42 +22,42 @@ public class CourseChapterService {
 	private CourseChapterRepository courseChapterRepository;
 
 	public CourseChapter addChapter(CourseChapter courseChapter) {
-		CourseChapter chapter =  createVideoLinkId(courseChapter);
+		CourseChapter chapter = updateVideoLinkId(courseChapter);
 		chapter = courseChapterRepository.save(chapter);
 		return chapter;
 	}
-	
+
 	public CourseChapter updateChapter(CourseChapter courseChapter) {
-		CourseChapter chapter =  createVideoLinkId(courseChapter);
+		CourseChapter chapter = updateVideoLinkId(courseChapter);
 		chapter = courseChapterRepository.save(chapter);
 		return chapter;
+
 	}
 
-	public CourseChapter createVideoLinkId(CourseChapter courseChapter) {
+	private CourseChapter updateVideoLinkId(CourseChapter courseChapter) {
 		ContentProvider contentProvider = courseChapter.getContentProvider();
-
-		if (contentProvider == ContentProvider.YOUTUBE) {
+		if (contentProvider == ContentProvider.YOUTUBE && courseChapter.getContent() != null) {
 
 			ChapterContent content = courseChapter.getContent();
-		
-			String videoLink = content.getYouTubeVideoLink();
-			
-			if (!videoLink.contains(YOUTUBE)) {
-				throw new IllegalArgumentException("Not an youtube link");
-			}
+			String videoId = extractYoutubeVideoLinkId(content.getYouTubeVideoLink());
+			content.setYouTubeVideoId(videoId);
 
-			if (videoLink.contains(EMBED)) {
-				String[] linksPart = videoLink.split("/");
-				content.setYouTubeVideoId(linksPart[linksPart.length - 1]);
-			}
-			if (videoLink.contains(WATCH)) {
-				String[] linksPart = videoLink.split("=");				
-				content.setYouTubeVideoId(linksPart[linksPart.length - 1]);			
-			}
-			courseChapter.setContent(content);
-			// Moved to Chapter content
-			courseChapter.setVideoLink(null);
 		}
 		return courseChapter;
 	}
+
+	public String extractYoutubeVideoLinkId(String videoLink) {
+		
+		Pattern compiledPattern = Pattern.compile(YOUTU_REGEX);
+		Matcher matcher = compiledPattern.matcher(videoLink);
+		
+		if (matcher.find()) {
+			System.out.println(matcher.group(2));
+			return matcher.group(2);
+
+		}
+		return null;
+
+	}
+
 }
