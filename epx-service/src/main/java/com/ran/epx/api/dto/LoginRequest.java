@@ -1,5 +1,7 @@
 package com.ran.epx.api.dto;
 
+import com.ran.epx.model.Provider;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -8,5 +10,7 @@ import lombok.experimental.Accessors;
 public class LoginRequest {
 
     private String email;
+    private String username;
     private String password;
+    private Provider provider;
 }

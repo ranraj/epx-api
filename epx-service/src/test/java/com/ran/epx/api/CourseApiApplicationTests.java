@@ -1,9 +1,7 @@
 package com.ran.epx.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -16,9 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.ran.epx.api.repository.CourseChapterRepository;
 import com.ran.epx.api.service.CourseChapterService;
-import com.ran.epx.model.ChapterContent;
-import com.ran.epx.model.ContentProvider;
-import com.ran.epx.model.CourseChapter;
 
 
 @AutoConfigureMockMvc

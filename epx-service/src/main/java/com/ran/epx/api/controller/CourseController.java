@@ -18,16 +18,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ran.epx.api.dto.LikeCourseDto;
+import com.ran.epx.api.repository.AuthTokenRepository;
 import com.ran.epx.api.repository.CourseChapterRepository;
 import com.ran.epx.api.repository.CourseRepository;
 import com.ran.epx.api.repository.UserRepository;
 import com.ran.epx.api.service.CourseChapterService;
 import com.ran.epx.api.service.CourseService;
+import com.ran.epx.model.AuthToken;
 import com.ran.epx.model.Course;
 import com.ran.epx.model.CourseChapter;
 import com.ran.epx.model.User;
@@ -51,6 +54,9 @@ public class CourseController {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private AuthTokenRepository authTokenRepository;
+
 	/**
 	 * No pagination support
 	 * 
@@ -72,13 +78,22 @@ public class CourseController {
 	 */
 	@GetMapping("/search")
 	public ResponseEntity<Object> getAllCourseSearch(@RequestParam(required = false) String title,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+			@RequestHeader("authKey") String authToken) {
+
+		Optional<AuthToken> authTokenOption = authTokenRepository.findByToken(authToken);
+
+		if (!authTokenOption.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		Pageable paging = PageRequest.of(page, size);
 		Page<Course> pageTuts;
-		if (title == null)
+		if (title == null) {
 			pageTuts = courseRepository.findByPublished(true, paging);
-		else
+		} else {
 			pageTuts = courseRepository.findByTitleContainingIgnoreCase(title, paging, true);
+		}
 
 		List<Course> courses = pageTuts.getContent();
 
@@ -182,15 +197,14 @@ public class CourseController {
 			@RequestBody CourseChapter chapter) {
 		if (!courseRepository.findById(courseId).isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		System.out.println("---");
-		System.out.println(chapter.getContent());
+		}		
 		chapter.setCourseId(courseId);
 		return new ResponseEntity<>(courseChapterService.addChapter(chapter), HttpStatus.OK);
 	}
 
 	@PutMapping("/{courseId}/chapters/{chapterId}")
-	public ResponseEntity<Object> updateChapter(@PathVariable("courseId") String courseId,@PathVariable("chapterId") String chapterId,@RequestBody CourseChapter chapter) {
+	public ResponseEntity<Object> updateChapter(@PathVariable("courseId") String courseId,
+			@PathVariable("chapterId") String chapterId, @RequestBody CourseChapter chapter) {
 		chapter.setId(chapterId);
 		CourseChapter response = courseChapterService.updateChapter(chapter);
 		return new ResponseEntity<>(response, HttpStatus.OK);

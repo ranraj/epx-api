@@ -21,4 +21,5 @@ public class User {
 	private List<String> favorites;
 	private Provider provider;
 	private List<EnrolledCourse> enrolledCourses;
+	
 }
